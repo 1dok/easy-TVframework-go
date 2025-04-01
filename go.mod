@@ -1,7 +1,3 @@
-module your_project_name
+module easy-TVframework-go
 
 go 1.20
-
-require (
-  // 根据需要添加依赖
-)
