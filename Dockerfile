@@ -8,17 +8,16 @@ WORKDIR /app
 COPY go.mod go.sum ./
 
 # 下载依赖
-RUN go mod download
+RUN go mod tidy
 
 # 复制整个项目到工作目录
 COPY . .
 
-# 打印当前目录和文件，调试用
+# 打印目录结构，调试用
 RUN echo "Checking directory structure:" && ls -l
 
-# 打印 Go 版本和模块信息
-RUN go version
-RUN go mod verify
+# 获取缺失依赖
+RUN go get github.com/g12777/easy-TVframework-go
 
 # 构建 Go 程序
 RUN echo "Building Go program..." && go build -o easy-tv main.go
