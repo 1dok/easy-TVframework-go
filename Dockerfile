@@ -7,18 +7,24 @@ WORKDIR /app
 # 将 go.mod 和 go.sum 复制到工作目录
 COPY go.mod go.sum ./
 
+# 打印模块信息和环境变量
+RUN echo "Checking go.mod content:" && cat go.mod
+RUN echo "Go environment:" && go env
+
 # 下载依赖
-RUN go clean -modcache && go mod tidy
+RUN echo "Running go mod tidy:" && go mod tidy
+RUN echo "Downloading modules:" && go mod download
 
 # 复制整个项目到工作目录
 COPY . .
 
-# 打印目录结构和依赖信息
-RUN echo "Printing current directory structure:" && ls -R /app
-RUN echo "Checking go.mod and dependencies:" && cat go.mod && go mod tidy
+# 打印目录结构
+RUN echo "Printing current directory:" && pwd
+RUN echo "Listing files:" && ls -al
+RUN echo "Listing /app:" && ls -al /app
 
 # 构建 Go 程序
-RUN echo "Building Go program..." && go mod download && go build -o easy-tv main.go
+RUN echo "Building Go program..." && go mod tidy && go mod download && go build -o easy-tv main.go
 
 # 运行阶段
 FROM alpine:latest
