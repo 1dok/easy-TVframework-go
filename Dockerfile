@@ -17,7 +17,7 @@ COPY . .
 RUN go version
 
 # 构建 Go 程序
-RUN echo "Building Go program..." && go build -o easy-tv ./cmd/app.go
+RUN echo "Building Go program..." && go build -o easy-tv main.go
 
 # 使用更小的基础镜像进行运行
 FROM alpine:latest
