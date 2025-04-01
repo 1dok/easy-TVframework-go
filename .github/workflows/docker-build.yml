@@ -34,7 +34,7 @@ jobs:
       with:
         context: .
         platforms: linux/amd64,linux/arm64,linux/arm/v7
-        tags: ${{ secrets.DOCKER_USERNAME }}/easy-tv:latest
+        tags: limi188/easy-tv:latest
         push: true
 
     # 显示 Docker 镜像
