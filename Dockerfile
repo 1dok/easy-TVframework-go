@@ -27,3 +27,5 @@ COPY --from=builder /app/easy-tv /usr/local/bin/easy-tv
 
 # 设置容器启动时执行的命令
 ENTRYPOINT ["easy-tv"]
+# 检查 go.mod 和依赖
+RUN echo "Checking go.mod and dependencies:" && cat go.mod && go mod tidy
