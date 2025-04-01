@@ -10,14 +10,18 @@ COPY go.mod go.sum ./
 # 下载依赖
 RUN go mod download
 
-# 复制源代码
+# 复制整个项目到工作目录
 COPY . .
 
-# 打印当前目录和文件
-RUN echo "Building Go program..." && ls -l
+# 打印当前目录和文件，调试用
+RUN echo "Checking directory structure:" && ls -l
+
+# 打印 Go 版本和模块信息
+RUN go version
+RUN go mod verify
 
 # 构建 Go 程序
-RUN go build -o easy-tv main.go
+RUN echo "Building Go program..." && go build -o easy-tv main.go
 
 # 运行阶段
 FROM alpine:latest
