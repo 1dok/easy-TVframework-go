@@ -10,8 +10,12 @@ COPY . .
 # 更新 alpine 镜像中的 apk 和安装所需的包
 RUN apk update && apk add --no-cache git
 
-# 安装 garble
-RUN go install mvdan.cc/garble@latest
+# 打印 Go 和 Garble 版本以帮助调试
+RUN go version
+RUN echo "Installing garble" && go install mvdan.cc/garble@latest
+
+# 如果上面失败，打印出日志
+RUN echo "Go modules info:" && go list -m all
 
 # 下载依赖
 RUN go mod tidy
