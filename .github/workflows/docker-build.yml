@@ -17,10 +17,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # 设置 QEMU，支持多架构构建
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-
     # 设置 Buildx
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -32,22 +28,15 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # 获取小写的 Docker Hub 用户名
-    - name: Convert username to lowercase
-      id: lowercase
-      run: echo "username=$(echo ${{ secrets.DOCKER_USERNAME }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
-
-    # 构建并推送镜像
+    # 构建并推送多平台 Docker 镜像
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
-        # 更新上下文为 Dockerfile 所在目录
-        context: ./docker
-        file: ./docker/Dockerfile
-        push: true
-        tags: ${{ env.username }}/easy-tv:latest
+        context: .
         platforms: linux/amd64,linux/arm64,linux/arm/v7
+        tags: ${{ secrets.DOCKER_USERNAME }}/easy-tv:latest
+        push: true
 
-    # 显示构建镜像
+    # 显示 Docker 镜像
     - name: Docker Image List
       run: docker images
