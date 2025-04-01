@@ -1,23 +1,35 @@
-# 使用官方的 Go 基础镜像
-FROM golang:1.20 AS build
+# 设置基础镜像
+FROM golang:1.20-alpine AS builder
 
+# 创建工作目录
 WORKDIR /app
 
-# 将 go.mod 和 go.sum 文件复制到容器中
+# 复制 go.mod 和 go.sum 文件
 COPY go.mod go.sum ./
 
-# 下载 Go 依赖
-RUN echo "Downloading Go dependencies..." && go mod tidy
+# 下载依赖
+RUN go mod download
 
-# 复制代码到容器中
+# 复制源代码
 COPY . .
 
-# 打印 Go 环境和版本信息，帮助调试
-RUN echo "Go version: $(go version)" && \
-    go env
+# 打印 Go 版本
+RUN go version
 
 # 构建 Go 程序
-RUN echo "Building Go program..." && go build -o easy-tv main.go
+RUN echo "Building Go program..." && go build -o easy-tv ./cmd/app.go
 
-# 设置容器启动时默认执行的命令
-CMD ["./easy-tv"]
+# 使用更小的基础镜像进行运行
+FROM alpine:latest
+
+# 设置工作目录
+WORKDIR /root/
+
+# 拷贝构建产物
+COPY --from=builder /app/easy-tv .
+
+# 暴露端口
+EXPOSE 8123
+
+# 运行程序
+ENTRYPOINT ["./easy-tv"]
