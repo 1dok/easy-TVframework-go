@@ -1,1 +1,1 @@
-module github.com/yourusername/easy-TVframework-go
+module github.com/1dok/easy-TVframework-go
