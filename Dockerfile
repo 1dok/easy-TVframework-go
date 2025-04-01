@@ -1,4 +1,4 @@
-# 使用较新版本的 Go 镜像作为基础镜像
+# 使用较新的 Go 镜像作为基础镜像
 FROM golang:1.19-alpine AS builder
 
 # 设置工作目录
@@ -10,11 +10,16 @@ COPY . .
 # 更新 alpine 镜像并安装必要的依赖（包括 git）
 RUN apk update && apk add --no-cache git
 
-# 打印 Go 版本以帮助调试
+# 打印 Go 版本和一些环境变量以帮助调试
 RUN go version
+RUN echo $GOPATH
+RUN echo $GOROOT
 
-# 安装 garble（如果失败，可以尝试手动编译）
-RUN echo "Installing garble" && go install mvdan.cc/garble@v0.14.1  # 指定兼容的版本
+# 安装 garble，使用兼容的 Go 版本
+RUN echo "Installing garble" && go install mvdan.cc/garble@v0.14.1 || echo "Failed to install garble"
+
+# 如果安装失败，显示错误信息
+RUN echo "Checking garble installation" && garble version || echo "Garble is not installed"
 
 # 下载依赖
 RUN go mod tidy
