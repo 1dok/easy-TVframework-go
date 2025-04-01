@@ -1,27 +1,30 @@
-# 使用 Golang 官方镜像作为构建环境
-FROM golang:1.20-alpine as builder
+# 使用 Golang 官方镜像作为构建阶段的基础镜像
+FROM golang:1.18-alpine AS builder
 
 # 设置工作目录
 WORKDIR /go/src/app
 
-# 将当前目录的内容复制到容器中的工作目录
+# 复制当前目录的内容到容器中
 COPY . .
 
-# 下载依赖并构建 Go 程序，生成二进制文件
-RUN go mod tidy && \
-    go build -o easy-tv ./main.go
+# 安装 garble
+RUN go install mvdan.cc/garble@latest
 
-# 使用较小的镜像作为运行时环境
+# 下载依赖
+RUN go mod tidy
+
+# 构建项目（假设该项目有构建命令或默认的构建方式）
+# 假设项目中没有 `main.go`，所以你需要通过其他构建命令构建项目
+RUN garble build -o easy-tv
+
+# 使用更小的基础镜像来运行应用
 FROM alpine:latest
 
-# 安装必要的依赖
+# 安装运行时所需的依赖
 RUN apk --no-cache add ca-certificates
 
-# 将构建阶段的二进制文件复制到当前镜像中
-COPY --from=builder /go/src/app/easy-tv /usr/local/bin/easy-tv
+# 将构建的二进制文件从构建阶段复制过来
+COPY --from=builder /go/src/app/easy-tv /usr/local/bin/
 
-# 设置容器启动命令
-ENTRYPOINT ["easy-tv"]
-
-# 配置容器暴露端口
-EXPOSE 8123
+# 设置容器的默认命令
+CMD ["easy-tv"]
