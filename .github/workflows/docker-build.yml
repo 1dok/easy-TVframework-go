@@ -1,13 +1,11 @@
 name: Build and Push Docker Image
 
 on:
-  # 推送到 main 或 master 分支时触发
   push:
     branches:
       - main
       - master
 
-  # 手动触发工作流
   workflow_dispatch:
 
 jobs:
@@ -43,7 +41,9 @@ jobs:
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
-        context: .
+        # 更新上下文为 Dockerfile 所在目录
+        context: ./docker
+        file: ./docker/Dockerfile
         push: true
         tags: ${{ env.username }}/easy-tv:latest
         platforms: linux/amd64,linux/arm64,linux/arm/v7
