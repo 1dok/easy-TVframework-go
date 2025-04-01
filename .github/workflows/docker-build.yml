@@ -1,24 +1,36 @@
-# 使用 Golang 官方镜像
-FROM golang:1.18-alpine AS builder
+name: Build and Push Docker Image
 
-# 设置工作目录
-WORKDIR /go/src/app
+on:
+  push:
+    branches:
+      - main  # 或其他您希望自动触发的分支
+  workflow_dispatch:  # 允许手动触发
 
-# 复制当前目录内容到容器中
-COPY . .
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-# 下载依赖并构建 Go 程序，生成二进制文件
-RUN go mod tidy && \
-    go build -o easy-tv ./cmd/main.go  # 确保路径正确
+    steps:
+    # 获取代码
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-# 使用一个轻量级的镜像来运行应用
-FROM alpine:latest  
+    # 设置 Docker Buildx
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-# 安装必要的运行时依赖
-RUN apk --no-cache add ca-certificates
+    # 登录 Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-# 将编译后的二进制文件复制到新镜像
-COPY --from=builder /go/src/app/easy-tv /usr/local/bin/
+    # 构建并推送 Docker 镜像
+    - name: Build and Push Docker image
+      run: |
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 \
+          -t ${{ secrets.DOCKER_USERNAME }}/easy-tv:latest \
+          --push .
 
-# 设置应用的默认命令
-CMD ["easy-tv"]
+    # 可选：发布成功后发送通知等（如果需要）
