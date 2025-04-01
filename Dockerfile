@@ -7,14 +7,16 @@ WORKDIR /go/src/app
 # 复制当前目录的内容到容器中
 COPY . .
 
+# 更新 alpine 镜像中的 apk 和安装所需的包
+RUN apk update && apk add --no-cache git
+
 # 安装 garble
 RUN go install mvdan.cc/garble@latest
 
 # 下载依赖
 RUN go mod tidy
 
-# 构建项目（假设该项目有构建命令或默认的构建方式）
-# 假设项目中没有 `main.go`，所以你需要通过其他构建命令构建项目
+# 构建项目，假设项目的构建命令如下
 RUN garble build -o easy-tv
 
 # 使用更小的基础镜像来运行应用
