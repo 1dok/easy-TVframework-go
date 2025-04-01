@@ -16,9 +16,6 @@ COPY . .
 # 打印目录结构，调试用
 RUN echo "Checking directory structure:" && ls -l
 
-# 获取缺失依赖
-RUN go get github.com/g12777/easy-TVframework-go
-
 # 构建 Go 程序
 RUN echo "Building Go program..." && go build -o easy-tv main.go
 
