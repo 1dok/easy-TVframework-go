@@ -1,36 +1,32 @@
-name: Build and Push Docker Image
+# 使用 Golang 官方镜像作为构建阶段的基础镜像
+FROM golang:1.18-alpine AS builder
 
-on:
-  push:
-    branches:
-      - main  # 或其他您希望自动触发的分支
-  workflow_dispatch:  # 允许手动触发
+# 设置工作目录
+WORKDIR /go/src/app
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# 复制当前目录的内容到容器中
+COPY . .
 
-    steps:
-    # 获取代码
-    - name: Checkout repository
-      uses: actions/checkout@v3
+# 更新 alpine 镜像中的 apk 和安装所需的包
+RUN apk update && apk add --no-cache git
 
-    # 设置 Docker Buildx
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+# 安装 garble
+RUN go install mvdan.cc/garble@latest
 
-    # 登录 Docker Hub
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+# 下载依赖
+RUN go mod tidy
 
-    # 构建并推送 Docker 镜像
-    - name: Build and Push Docker image
-      run: |
-        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 \
-          -t ${{ secrets.DOCKER_USERNAME }}/easy-tv:latest \
-          --push .
+# 构建项目，假设项目的构建命令如下
+RUN garble build -o easy-tv
 
-    # 可选：发布成功后发送通知等（如果需要）
+# 使用更小的基础镜像来运行应用
+FROM alpine:latest
+
+# 安装运行时所需的依赖
+RUN apk --no-cache add ca-certificates
+
+# 将构建的二进制文件从构建阶段复制过来
+COPY --from=builder /go/src/app/easy-tv /usr/local/bin/
+
+# 设置容器的默认命令
+CMD ["easy-tv"]
