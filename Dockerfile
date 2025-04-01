@@ -1,27 +1,27 @@
-# 使用官方 Golang 镜像作为构建环境
-FROM golang:1.20-alpine AS builder
+# 使用 Golang 官方镜像作为构建环境
+FROM golang:1.20-alpine as builder
 
 # 设置工作目录
-WORKDIR /app
+WORKDIR /go/src/app
 
-# 拷贝整个项目代码到工作目录
+# 将当前目录的内容复制到容器中的工作目录
 COPY . .
 
 # 下载依赖并构建 Go 程序，生成二进制文件
 RUN go mod tidy && \
-    go build -o easy-tv ./main.go  # 假设 main.go 位于根目录
+    go build -o easy-tv ./main.go
 
-# 使用更轻量的 Alpine 镜像作为运行环境
+# 使用较小的镜像作为运行时环境
 FROM alpine:latest
 
-# 创建工作目录
-WORKDIR /root/
+# 安装必要的依赖
+RUN apk --no-cache add ca-certificates
 
-# 从构建阶段复制编译好的二进制文件
-COPY --from=builder /app/easy-tv .
+# 将构建阶段的二进制文件复制到当前镜像中
+COPY --from=builder /go/src/app/easy-tv /usr/local/bin/easy-tv
 
-# 开放服务端口（假设程序监听 8080）
-EXPOSE 8080
+# 设置容器启动命令
+ENTRYPOINT ["easy-tv"]
 
-# 运行程序
-CMD ["./easy-tv"]
+# 配置容器暴露端口
+EXPOSE 8123
