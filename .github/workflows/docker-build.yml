@@ -35,10 +35,10 @@ jobs:
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/easy-TV:latest
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
+      context: .
+      push: true
+      tags: ${{ secrets.DOCKER_USERNAME | toLower }}/easy-tv:latest
+      platforms: linux/amd64,linux/arm64,linux/arm/v7
 
     # 显示构建镜像
     - name: Docker Image List
