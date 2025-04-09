@@ -1,10 +1,10 @@
 # easy-TVframework-go
 #### 可用itv服务器IP在 liveITV/config.go 中配置，当前配置为示例不可直接使用。
 
-## Golang 多品台构建支持
+## Golang 多平台构建支持
 go install mvdan.cc/garble@latest
 
-## Docker多品台构建支持
+## Docker 多平台构建支持
 docker buildx create --name mybuilder --use --driver docker-container  
 docker buildx inspect --bootstrap
 

@@ -14,23 +14,17 @@ var Enable_Weishi bool = true
 
 var WorkIP_bestzb string = ""
 var IPList_bestzb = []IPRecord{
-	{Address: "39.135.132.111", Fail: 0},
-	{Address: "39.135.97.11", Fail: 0},
-	{Address: "39.135.97.33", Fail: 0},
+	{Address: "39.135.132.221", Fail: 0},
 }
 
 var WorkIP_hnbblive string = ""
 var IPList_hnbblive = []IPRecord{
-	{Address: "39.135.132.111", Fail: 0},
-	{Address: "39.135.97.11", Fail: 0},
-	{Address: "39.135.97.33", Fail: 0},
+	{Address: "39.135.132.221", Fail: 0},
 }
 
 var WorkIP_fifalive string = ""
 var IPList_fifalive = []IPRecord{
-	{Address: "39.135.132.111", Fail: 0},
-	{Address: "39.135.97.11", Fail: 0},
-	{Address: "39.135.97.33", Fail: 0},
+	{Address: "39.135.132.221", Fail: 0},
 }
 
 var ChannelList = []ChannelRecord{

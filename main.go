@@ -61,7 +61,7 @@ func setupRouter() *gin.Engine {
 		playtoken := utils.DefaultQuery(c.Request, "token", "")
 
 		// token 验证
-		if ts == "" && (config.Token == "" || playtoken != config.Token) {
+		if ts == "" && (config.Token != "" && playtoken != config.Token) {
 			logger.Printf("Token error:%s clientIP:%s VIEW:%s", playtoken, clientIP, rid)
 			c.String(http.StatusUnauthorized, "token error")
 			return
