@@ -5,7 +5,7 @@ FROM --platform=$BUILDPLATFORM golang:1.23 AS builder
 WORKDIR /app
 
 # Copy go.mod and go.sum files for dependency management optimization
-COPY go.mod ./
+COPY go.mod go.sum ./
 
 # Download dependencies
 RUN go mod download
@@ -13,8 +13,11 @@ RUN go mod download
 # Copy source code
 COPY . .
 
+# Set default values for TARGETOS and TARGETARCH
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+
 # Compile the Go program
-ARG TARGETOS TARGETARCH
 RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH go build -trimpath -ldflags="-s -w" -o /app/itv .
 
 # Runtime image
@@ -36,7 +39,7 @@ COPY --from=builder /app/itv /app/itv
 EXPOSE 8123
 
 # Add entrypoint script
-ADD docker-entrypoint.sh /
+ADD docker-entrypoint.sh / 
 RUN chmod +x /docker-entrypoint.sh
 
 # Define entrypoint
