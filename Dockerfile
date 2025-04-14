@@ -10,6 +10,9 @@ COPY go.mod ./
 # Download dependencies
 RUN go mod download
 
+# Print out environment variables for debugging
+RUN echo "TARGETOS=$TARGETOS" && echo "TARGETARCH=$TARGETARCH"
+
 # Copy source code
 COPY . .
 
