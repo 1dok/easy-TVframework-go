@@ -2,7 +2,9 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ main ]  # 根据您的默认分支名修改为 main 或 master
+    branches: [ main ]  # 修改为你的默认分支名，如 master
+
+  workflow_dispatch:  # ✅ 允许手动触发
 
 jobs:
   build:
