@@ -2,9 +2,9 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ main ]  # 修改为你的默认分支名，如 master
+    branches: [ main ]
 
-  workflow_dispatch:  # ✅ 允许手动触发
+  workflow_dispatch:  # 支持手动触发
 
 jobs:
   build:
@@ -28,5 +28,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/easy-TV:latest
+          # ✅ 使用小写用户名和镜像名
+          tags: ${{ secrets.DOCKER_USERNAME }}/easy-tv:latest
           platforms: linux/amd64,linux/arm64
