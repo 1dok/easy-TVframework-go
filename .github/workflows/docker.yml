@@ -25,10 +25,10 @@ jobs:
     - name: Ensure go.sum exists
       run: |
         if [ ! -f go.sum ]; then
-          echo "# empty go.sum created by GitHub Actions" > go.sum
+          echo "# created automatically" > go.sum
         fi
 
-    - name: Build and Push Docker Image
+    - name: Build and Push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
