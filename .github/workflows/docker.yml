@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main    # 或你主分支名
+      - master
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   build:
@@ -26,7 +28,10 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         context: .
-        file: ./Dockerfile
-        push: true
-        tags: limi188/easy-tvframework-go:latest
+          file: ./Dockerfile
+          push: true
+          tags: limi188/easy-tvframework:latest
+          platforms: linux/amd64,linux/arm64
 
+      - name: Show image digest
+        run: echo "Image pushed with digest ${{ steps.build-and-push.outputs.digest }}"
