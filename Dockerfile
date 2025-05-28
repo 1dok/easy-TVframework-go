@@ -5,7 +5,11 @@ FROM --platform=$BUILDPLATFORM golang:1.23 AS builder
 WORKDIR /app
 
 # Copy go.mod and go.sum files for dependency management optimization
-COPY go.mod go.sum ./
+COPY go.mod ./
+COPY go.sum ./ || touch go.sum  # ←✅ 如果 go.sum 不存在，不会报错
+
+# 设置国内 Go 模块代理，防止下载失败
+ENV GOPROXY=https://goproxy.cn,direct
 
 # Download dependencies
 RUN go mod download
