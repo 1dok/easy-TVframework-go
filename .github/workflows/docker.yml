@@ -22,10 +22,10 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Ensure go.sum exists
+    - name: Create dummy go.sum if not exists
       run: |
         if [ ! -f go.sum ]; then
-          echo "# created automatically" > go.sum
+          echo "# generated go.sum" > go.sum
         fi
 
     - name: Build and Push Docker image
