@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 复制依赖配置文件
 COPY go.mod ./
-COPY go.sum ./
+#COPY go.sum ./
 
 # 安装依赖（关键）
 RUN go mod tidy
