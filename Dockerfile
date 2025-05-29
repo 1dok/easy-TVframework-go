@@ -5,7 +5,7 @@ FROM golang:1.22 as builder
 WORKDIR /app
 
 # 复制 go.mod 和 go.sum 并下载依赖
-COPY go.mod go.sum ./
+COPY go.mod ./
 RUN go mod download
 
 # 复制项目的所有源代码
